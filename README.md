@@ -35,7 +35,7 @@ docker logs -f business-manager-app
 ### 🔌 Access
 
 - **API/Web**: [http://localhost:8000](http://localhost:8000)
-- **Database**: Port `3307`
+- **Database**: Port `3306`
   - User: `user`
   - Password: `password`
   - Database: `business_manager`
