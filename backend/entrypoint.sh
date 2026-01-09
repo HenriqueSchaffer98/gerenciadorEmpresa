@@ -8,22 +8,20 @@ set -m
 
 echo "🚀 Starting Business Manager Backend Container..."
 
-# Check if Laravel is installed checks for artisan file
+# Check if Laravel is installed by checking for artisan file
 if [ ! -f "artisan" ]; then
     echo "⚡ Laravel not found. Installing fresh Laravel project..."
     
-    # Remove empty hidden files if any, to allow composer create-project to work if dir is technically not empty but has system files
-    # Being safe: only run create-project if directory is effectively empty or contains only docker stuff
+    echo "📦 Downloading Laravel to temporary directory..."
+    # Install to /tmp/laravel first because /var/www contains Dockerfile/etc
+    composer create-project laravel/laravel /tmp/laravel --prefer-dist --no-interaction
     
-    # We will use composer create-project in a temp folder and move it, 
-    # OR just use composer create-project . if empty.
-    # Current dir is /var/www
+    echo "🚚 Moving Laravel files to project root..."
+    # Copy all files, including hidden ones, from temp to current dir
+    cp -r /tmp/laravel/. .
     
-    # To avoid "directory not empty" errors if simple files exist, we can use a force install method
-    # or install to a temp dir and move.
-    
-    echo "📦 Downloading Laravel..."
-    composer create-project laravel/laravel . --prefer-dist --no-interaction
+    # Clean up
+    rm -rf /tmp/laravel
     
     echo "🔧 Setting permissions..."
     chown -R www-data:www-data /var/www
